@@ -31,6 +31,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     } catch (e) {
       err = e;
     }
+    if (!mounted) return; // Week 6 fix: the user may have left during the await.
     setState(() {
       _item = item;
       _error = err == null ? null : 'Could not load item';
