@@ -99,17 +99,26 @@ class LocalDb {
       if (rows.isEmpty) return;
       final current = Task.fromDb(rows.first);
 
-      // TODO 1: follow the pattern of deleteTask above (about 15 lines).
-      // 1. Update the task row with the new values in `fields`.
-      //    Also set is_dirty = 1, updated_at = now, sync_state = 'pending'.
-      //    Do NOT change `version`: only the server issues versions.
-      // 2. Insert ONE outbox row with these columns:
-      //      task_id, op ('update'), fields (jsonEncode(fields)),
-      //      base_fields: the SAME keys with their values BEFORE the edit,
-      //        e.g. jsonEncode({for (final k in fields.keys) k: current.field(k)}),
-      //      base_version (current.version), updated_at (now), idem_key (_uuid.v4()).
-      // Both writes use `txn`, so they succeed or fail together.
-      throw UnimplementedError('TODO 1: editTask');
+      // TODO 1: the task row and its outbox row in ONE transaction (both use txn).
+      // 1. Change the task row. `version` is left alone: only the server issues versions.
+      await txn.update(
+        'task',
+        {...fields, 'is_dirty': 1, 'updated_at': now, 'sync_state': 'pending'},
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+
+      // 2. Queue the operation: the changed fields, their values BEFORE the edit
+      //    (needed for the field-level merge), the base version and a fresh key.
+      await txn.insert('outbox', {
+        'task_id': id,
+        'op': 'update',
+        'fields': jsonEncode(fields),
+        'base_fields': jsonEncode({for (final k in fields.keys) k: current.field(k)}),
+        'base_version': current.version,
+        'updated_at': now,
+        'idem_key': _uuid.v4(),
+      });
     });
   }
 
