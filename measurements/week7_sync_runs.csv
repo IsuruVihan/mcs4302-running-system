@@ -1,0 +1,8 @@
+run,strategy,scenario,final_server_title,final_server_status,final_server_version,phone_sync_state,conflicts,merged,unresolved,lost_updates,sync_bytes,sync_bytes_sync,sync_bytes_changes,sync_ms,sync_calls,retries,last_changes_reply_b,full_tasks_reply_b
+Part2,version,S1,Pump repair – urgent,closed,5,synced,1,1,0,0,952,600,352,685,2,0,352,69408
+Part4,lww,S1,Pump repair,closed,4,synced,0,0,0,1,523,345,178,273,1,0,178,69408
+Part4,version,S2,Pump repair – parts ordered,open,4,conflict,1,0,1,0,497,303,194,272,1,0,194,69408
+Part4,lww,S3,Pump repair – urgent,open,4,synced,0,0,0,0,536,351,185,142,1,0,185,69408
+Part4,version,S3,Pump repair – urgent,open,4,synced,0,0,0,0,498,311,187,207,1,0,187,69408
+Part3 same key,version,lost reply,Pump repair – urgent,open,4,synced,0,0,0,0,678,491,187,466,2,1,187,69408
+Part3 new key,version,lost reply,Pump repair – urgent,open,4,conflict,1,0,1,0,663,476,187,425,2,1,187,69408

@@ -52,3 +52,19 @@ Tests: `flutter test` (8 tests; the Week 6 ones use fakes, no backend needed).
   `W6RUN` console lines. Isolate.run cut the worst frame at n = 50k from about
   143 ms to 43 ms but did not shorten end-to-end time; at n = 5k it made the
   decode slower (13 ms to 40 ms).
+
+## Week 7 results
+
+Entry point: `flutter run -t lib/main_week7.dart` (Phone A). The backend's
+`/w7` endpoints come from `backend/week7.py`.
+
+- TODO 1 (`lib/week7/local_db.dart`): `editTask` updates the task row and
+  inserts its outbox row in one transaction. After an offline edit and
+  `adb shell am force-stop`, the outbox (1 row), the pending task-42 and the
+  Offline switch all survived the restart.
+- TODO 2 (`lib/week7/sync_engine.dart`): on a 409 the op is merged only if the
+  server did not change the same field; otherwise it is blocked and task-42
+  is flagged `conflict`.
+- All runs (record 42 scenarios S1-S3, LWW vs version, and the Part 3 lost
+  reply) are in `measurements/week7_sync_runs.csv`, copied from the app's
+  Last sync card and the server copy of task-42.
