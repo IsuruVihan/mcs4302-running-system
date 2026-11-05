@@ -94,17 +94,31 @@ class SyncEngine {
   /// Called when the server answers 409: [server] is its current copy.
   Future<void> resolveConflict(
       OutboxOp op, Task server, SyncReport report) async {
-    // TODO 2: field-level merge (about 15 lines). See lecture slides 28-30.
-    // 1. sameField = did the server change any field this op also changed?
-    //    For each f in op.fields.keys, compare server.field(f) with op.baseFields[f].
-    // 2. If op.op != 'update' or sameField: a merge would lose an edit.
-    //    Call db.blockOp(op), add 1 to report.unresolved, and return.
-    // 3. Otherwise the edits are independent:
-    //      final rebased = await db.rebaseOp(op, server.version);
-    //      final local = await db.task(op.taskId);
-    //      final reply = await api.push(rebased, mode, local!);
-    //    On 200: await _accepted(rebased, reply.task), then report.merged++.
-    //    Otherwise: db.blockOp(rebased), report.unresolved++.
-    throw UnimplementedError('TODO 2: resolveConflict');
+    // TODO 2: field-level merge.
+    // 1. Did the server change a field that this op also changed? Compare the
+    //    server's current value with the value the op saw before its edit.
+    final sameField =
+        op.fields.keys.any((f) => server.field(f) != op.baseFields[f]);
+
+    // 2. A delete, or two edits to the same field: merging would lose an edit,
+    //    so park the op and flag the task for the user.
+    if (op.op != 'update' || sameField) {
+      await db.blockOp(op);
+      report.unresolved++;
+      return;
+    }
+
+    // 3. Independent fields: move the op onto the server's version and push again.
+    final rebased = await db.rebaseOp(op, server.version);
+    final local = await db.task(op.taskId);
+    final reply = await api.push(rebased, mode, local!);
+    if (reply.status == 200) {
+      await _accepted(rebased, reply.task);
+      report.merged++;
+    } else {
+      // The server moved again meanwhile: let the user decide.
+      await db.blockOp(rebased);
+      report.unresolved++;
+    }
   }
 }
