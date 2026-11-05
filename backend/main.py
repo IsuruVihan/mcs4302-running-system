@@ -237,3 +237,8 @@ async def clear_job_log():
 from week6 import router as week6_router  # noqa: E402
 
 app.include_router(week6_router)
+
+# Week 7: offline-first sync endpoints (/w7/reset, /w7/sync, /w7/changes, ...).
+from week7 import router as week7_router  # noqa: E402
+
+app.include_router(week7_router)
