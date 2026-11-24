@@ -242,3 +242,8 @@ app.include_router(week6_router)
 from week7 import router as week7_router  # noqa: E402
 
 app.include_router(week7_router)
+
+# Week 8: geofence events (/w8/reset, /w8/events, /w8/fence, /w8/stats).
+from week8 import router as week8_router  # noqa: E402
+
+app.include_router(week8_router)
