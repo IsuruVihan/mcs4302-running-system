@@ -23,12 +23,14 @@ class GeofenceMonitor {
     final d = Geolocator.distanceBetween(fix.lat, fix.lng, kFenceLat, kFenceLng);
     lastDistanceM = d;
 
-    // TODO 2 (about 8 lines). `d` is already computed above.
-    // 1. This fix is inside if d < kFenceRadiusM.
-    // 2. If `inside` is still null (the first fix of the run), set it and
-    //    return null: the first fix sets the state but is not an event.
-    // 3. If the state did not change, return null.
-    // 4. Otherwise update `inside` and return 'enter' or 'exit'.
-    throw UnimplementedError('TODO 2: onFix');
+    // TODO 2: an event only when the inside/outside state changes.
+    final nowInside = d < kFenceRadiusM;
+    if (inside == null) {
+      inside = nowInside; // first fix: sets the state, is not an event
+      return null;
+    }
+    if (nowInside == inside) return null;
+    inside = nowInside;
+    return nowInside ? 'enter' : 'exit';
   }
 }

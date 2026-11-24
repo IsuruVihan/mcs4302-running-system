@@ -33,15 +33,14 @@ class EventQueue {
 
   /// Queue one geofence event ('enter' or 'exit').
   Future<void> add(String type) async {
-    // TODO 3 (about 6 lines)
-    // Insert ONE row into the table 'event_outbox' (see open() above) with:
-    //   idem_key: a new _uuid.v4()   (the server stores a repeated key only once)
-    //   fence_id: kFenceId
-    //   type:     type               ('enter' or 'exit')
-    //   at:       DateTime.now().toUtc().toIso8601String()
-    // Do NOT put the latitude or longitude in the row: only the event leaves the phone.
-    // The provided EventSync sends the queue and deletes a row only after an OK.
-    throw UnimplementedError('TODO 3: add');
+    // TODO 3: one row per event, with a fresh idempotency key and NO coordinates:
+    // only the event leaves the phone. EventSync deletes the row after an OK.
+    await db.insert('event_outbox', {
+      'idem_key': _uuid.v4(),
+      'fence_id': kFenceId,
+      'type': type,
+      'at': DateTime.now().toUtc().toIso8601String(),
+    });
   }
 
   /// Unsent events, oldest first.
