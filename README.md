@@ -68,3 +68,17 @@ Entry point: `flutter run -t lib/main_week7.dart` (Phone A). The backend's
 - All runs (record 42 scenarios S1-S3, LWW vs version, and the Part 3 lost
   reply) are in `measurements/week7_sync_runs.csv`, copied from the app's
   Last sync card and the server copy of task-42.
+
+## Week 8 results
+
+Entry point: `flutter run -t lib/main_week8.dart`. The backend's `/w8` endpoints
+come from `backend/week8.py`. The location permissions are foreground only
+(`ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`).
+
+- TODOs 1-3 are in `lib/week8/location_service.dart`, `geofence.dart` and
+  `event_queue.dart`. Only geofence events (key, fence id, type, time) are
+  queued and sent, never the coordinates.
+- The route `week8_route.gpx` was played at 1X into the emulator's GPS. The
+  runs are in `measurements/week8_geofence_runs.csv`: 1 s gave 152 fixes and
+  ~1 s detection delays; 30 s gave 7 fixes and a 23.9 s exit delay. Event
+  traffic was 251 B in 2 calls in every run.

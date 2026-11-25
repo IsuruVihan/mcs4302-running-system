@@ -1,0 +1,6 @@
+run,requested_interval_s,location_updates,run_duration_s,mean_actual_interval_s,location_update_bytes_est,event_bytes_actual,event_calls,delay_enter_s,delay_exit_s,enter_fix_no,exit_fix_no,server_events,notes
+1s (Part 1 test = measured),1,152,180.6,1.20,15329,251,2,0.8,0.9,27,111,2,
+5s,5,40,202.2,5.18,4027,251,2,3.7,1.9,11,30,2,
+30s,30,7,180.1,30.01,703,251,2,4.0,23.9,2,6,2,
+30s repeat,30,7,182.1,30.35,703,251,2,4.0,23.9,2,6,2,optional repeat; same delays
+offline check,1,163,199.6,1.23,16445,251,2,0.0,0.8,40,122,2,offline until route t~105 s; queue 1 and server 0 after ENTER; queue 0 after Online
